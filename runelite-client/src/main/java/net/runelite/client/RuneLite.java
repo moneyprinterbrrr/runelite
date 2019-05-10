@@ -61,6 +61,7 @@ import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.rs.ClientUpdateCheckMode;
 import net.runelite.client.ui.ClientUI;
 import net.runelite.client.ui.DrawManager;
+import net.runelite.client.ui.RuneLiteSplashScreen;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.OverlayRenderer;
 import net.runelite.client.ui.overlay.WidgetOverlay;
@@ -75,9 +76,11 @@ import org.slf4j.LoggerFactory;
 @Slf4j
 public class RuneLite
 {
+	public static final String RUNELIT_VERSION = "0.1.1";
 	public static final File RUNELITE_DIR = new File(System.getProperty("user.home"), ".runelite");
 	public static final File PROFILES_DIR = new File(RUNELITE_DIR, "profiles");
 	public static final File SCREENSHOT_DIR = new File(RUNELITE_DIR, "screenshots");
+	public static RuneLiteSplashScreen splashScreen = new RuneLiteSplashScreen();
 
 	@Getter
 	private static Injector injector;
@@ -159,6 +162,7 @@ public class RuneLite
 		final OptionParser parser = new OptionParser();
 		parser.accepts("developer-mode", "Enable developer tools");
 		parser.accepts("debug", "Show extra debugging output");
+		parser.accepts("no-splash", "Do not show the splash screen");
 
 		final ArgumentAcceptingOptionSpec<ClientUpdateCheckMode> updateMode = parser
 			.accepts("rs", "Select client type")
@@ -183,7 +187,8 @@ public class RuneLite
 			System.exit(0);
 		}
 
-		final boolean developerMode = options.has("developer-mode") && RuneLiteProperties.getLauncherVersion() == null;
+//		final boolean developerMode = options.has("developer-mode") && RuneLiteProperties.getLauncherVersion() == null;
+		final boolean developerMode = true;
 
 		if (developerMode)
 		{
@@ -212,6 +217,15 @@ public class RuneLite
 			}
 		});
 
+		if (!options.has("no-splash"))
+		{
+			splashScreen.open(4);
+		}
+
+		// The submessage is shown in case the connection is slow
+		splashScreen.setMessage("Starting RuneLite Injector");
+		splashScreen.setSubMessage( " ");
+
 		final long start = System.currentTimeMillis();
 
 		injector = Guice.createInjector(new RuneLiteModule(
@@ -219,7 +233,7 @@ public class RuneLite
 			developerMode));
 
 		injector.getInstance(RuneLite.class).start();
-
+		splashScreen.setProgress(1, 5);
 		final long end = System.currentTimeMillis();
 		final RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
 		final long uptime = rb.getUptime();
@@ -237,12 +251,15 @@ public class RuneLite
 			injector.injectMembers(client);
 		}
 
+		splashScreen.setMessage("Loading configuration");
 		// Load user configuration
 		configManager.load();
 
 		// Load the session, including saved configuration
 		sessionManager.loadSession();
+		splashScreen.setProgress(2, 5);
 
+		splashScreen.setMessage("Loading plugins");
 		// Tell the plugin manager if client is outdated or not
 		pluginManager.setOutdated(isOutdated);
 
@@ -253,12 +270,22 @@ public class RuneLite
 		// Plugins have provided their config, so set default config
 		// to main settings
 		pluginManager.loadDefaultPluginConfiguration();
+		splashScreen.setProgress(3, 5);
 
+		splashScreen.setMessage("Starting Session");
 		// Start client session
 		clientSessionManager.start();
+		splashScreen.setProgress(4, 5);
+
+		// Load the session, including saved configuration
+		splashScreen.setMessage("Loading interface");
+		splashScreen.setProgress(5, 5);
 
 		// Initialize UI
 		clientUI.open(this);
+
+		// Close the splash screen
+		splashScreen.close();
 
 		// Initialize Discord service
 		discordService.init();
