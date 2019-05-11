@@ -187,8 +187,8 @@ public class RuneLite
 			System.exit(0);
 		}
 
-//		final boolean developerMode = options.has("developer-mode") && RuneLiteProperties.getLauncherVersion() == null;
-		final boolean developerMode = true;
+		final boolean developerMode = options.has("developer-mode") && RuneLiteProperties.getLauncherVersion() == null;
+//		final boolean developerMode = true;
 
 		if (developerMode)
 		{

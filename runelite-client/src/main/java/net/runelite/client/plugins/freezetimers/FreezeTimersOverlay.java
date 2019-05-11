@@ -27,7 +27,7 @@ public class FreezeTimersOverlay extends Overlay
 
 	private final FreezeTimersConfig config;
 	private final Client client;
-	private final Font timerFont = FontManager.getRunescapeBoldFont().deriveFont(14.0f);
+	private final Font timerFont = FontManager.getRunescapeFont().deriveFont(14.0f);
 	private final BufferedImage FREEZE_IMAGE = ImageUtil.getResourceStreamFromClass(getClass(), "freeze.png");
 	private final BufferedImage TB_IMAGE = ImageUtil.getResourceStreamFromClass(getClass(), "teleblock.png");
 	private final BufferedImage VENG_IMAGE = ImageUtil.getResourceStreamFromClass(getClass(), "veng.png");
@@ -99,7 +99,7 @@ public class FreezeTimersOverlay extends Overlay
 
 		if (config.noImage())
 		{
-			renderTextLocation(g, text, 11, Font.BOLD, Color.WHITE, FixedPoint);
+			renderTextLocation(g, text, 11, Font.PLAIN, Color.WHITE, FixedPoint);
 		}
 		else
 		{
@@ -127,11 +127,11 @@ public class FreezeTimersOverlay extends Overlay
 		{
 			if (timers.getTimerEnd(actor, TimerType.FREEZE) <= currentTick)
 			{
-				renderTextLocation(g, text, 11, Font.BOLD, Color.CYAN, poi);
+				renderTextLocation(g, text, 11, Font.PLAIN, Color.CYAN, poi);
 			}
 			if (timers.getTimerEnd(actor, TimerType.FREEZE) >= currentTick)
 			{
-				renderTextLocation(g, " | " + text, 11, Font.BOLD, Color.CYAN, FixedPoint);
+				renderTextLocation(g, " | " + text, 11, Font.PLAIN, Color.CYAN, FixedPoint);
 			}
 		}
 		else
@@ -198,7 +198,8 @@ public class FreezeTimersOverlay extends Overlay
 
 	private void renderTextLocation(Graphics2D graphics, String txtString, int fontSize, int fontStyle, Color fontColor, Point canvasPoint)
 	{
-		graphics.setFont(new Font("Arial", fontStyle, fontSize));
+//		graphics.setFont(new Font("Arial", fontStyle, fontSize));
+		graphics.setFont(timerFont);
 		if (canvasPoint != null)
 		{
 			final Point canvasCenterPoint = new Point(
