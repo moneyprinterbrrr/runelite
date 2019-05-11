@@ -27,7 +27,8 @@ public class FreezeTimersOverlay extends Overlay
 
 	private final FreezeTimersConfig config;
 	private final Client client;
-	private final Font timerFont = FontManager.getRunescapeFont().deriveFont(14.0f);
+//	private final Font timerFont = FontManager.getRunescapeSmallFont().deriveFont(14.0f);
+	private final Font timerFont = FontManager.getRunescapeSmallFont();
 	private final BufferedImage FREEZE_IMAGE = ImageUtil.getResourceStreamFromClass(getClass(), "freeze.png");
 	private final BufferedImage TB_IMAGE = ImageUtil.getResourceStreamFromClass(getClass(), "teleblock.png");
 	private final BufferedImage VENG_IMAGE = ImageUtil.getResourceStreamFromClass(getClass(), "veng.png");
