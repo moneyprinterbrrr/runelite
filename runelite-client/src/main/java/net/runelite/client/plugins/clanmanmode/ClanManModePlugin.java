@@ -65,7 +65,7 @@ public class ClanManModePlugin extends Plugin
 	int inwildy;
 	int ticks;
 	Map<String, Integer> clan = new HashMap<>();
-	private List<Player> clanMembers = new ArrayList<>();
+	private List<String> clanMembers = new ArrayList<>();
 
 	@Override
 	protected void startUp() throws Exception {
@@ -131,7 +131,7 @@ public class ClanManModePlugin extends Plugin
 			{
 				if (player != null && player != local && memberName.equals(Text.toJagexName(player.getName())))
 				{
-					clanMembers.add(player);
+					clanMembers.add(Text.toJagexName(player.getName()));
 					break;
 				}
 			}
@@ -146,11 +146,11 @@ public class ClanManModePlugin extends Plugin
 		if (member.getWorld() == client.getWorld())
 		{
 			final String memberName = Text.toJagexName(member.getUsername());
-			final Iterator<Player> each = clanMembers.iterator();
+			final Iterator<String> each = clanMembers.iterator();
 
 			while (each.hasNext())
 			{
-				if (memberName.equals(Text.toJagexName(each.next().getName())))
+				if (memberName.equals(Text.toJagexName(each.next())))
 				{
 					each.remove();
 					break;
@@ -167,7 +167,7 @@ public class ClanManModePlugin extends Plugin
 
 		if (player != local && player.isClanMember())
 		{
-			clanMembers.add(player);
+			clanMembers.add(Text.toJagexName(player.getName()));
 		}
 	}
 
@@ -200,9 +200,10 @@ public class ClanManModePlugin extends Plugin
 				if (match_username != null) {
 //					if (clan.containsKey(pmatch.group(1).replace(" ", " "))) {
 //					if (clan.containsKey(pmatch.group(1))) {
-					if (isClanMember(match_username)) {
+//					if (isClanMember(match_username)) {
+					if (clanMembers.contains(Text.toJagexName(match_username))) {
 						MenuEntry[] entries = client.getMenuEntries();
-						System.out.println(entries);
+//						System.out.println(entries);
 						entries = ArrayUtils.removeElement(entries, entries[entries.length - 1]);
 						client.setMenuEntries(entries);
 					}
@@ -211,15 +212,15 @@ public class ClanManModePlugin extends Plugin
 		}
 	}
 
-	private boolean isClanMember(String username)
-	{
-		for (Player member: clanMembers) {
-			if (Text.toJagexName(member.getName()).equals(Text.toJagexName(username))) {
-				return true;
-			}
-		}
-		return false;
-	}
+//	private boolean isClanMember(String username)
+//	{
+//		for (String member: clanMembers) {
+//			if (Text.toJagexName(member).equals(Text.toJagexName(username))) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 
 
 }
