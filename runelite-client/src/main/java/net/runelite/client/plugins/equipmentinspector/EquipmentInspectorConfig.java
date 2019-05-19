@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Adam <Adam@sigterm.info>
+ * Copyright (c) 2018, https://runelitepl.us
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,50 +22,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.api.kit;
+package net.runelite.client.plugins.equipmentinspector;
 
-import net.runelite.api.PlayerComposition;
+import net.runelite.client.config.Config;
+import net.runelite.client.config.ConfigGroup;
+import net.runelite.client.config.ConfigItem;
 
-/**
- * Represents an equipment slot in a players composition.
- * <p>
- * These values are intended for use with {@link PlayerComposition} equipment
- * slots. For obtaining information about equipment in the local players
- * equipment {@link net.runelite.api.ItemContainer}, use
- * {@link net.runelite.api.EquipmentInventorySlot}.
- */
-public enum KitType
+@ConfigGroup("grounditems")
+public interface EquipmentInspectorConfig extends Config
 {
-	CAPE(1),
-	AMULET(2),
-	WEAPON(3),
-	TORSO(4),
-	SHIELD(5),
-	LEGS(7),
-	HEAD(8),
-	HANDS(9),
-	BOOTS(10),
-	JAW(11),
-	RING(12),
-	AMMUNITION(13);
-
-	/**
-	 * Raw equipment index.
-	 */
-	private final int index;
-
-	KitType(int index)
+	@ConfigItem(
+		keyName = "ShowValue",
+		name = "Show the total value of the items",
+		description = "shows the total value of the items",
+		position = 1
+	)
+	default boolean ShowValue()
 	{
-		this.index = index;
+		return true;
 	}
 
-	/**
-	 * Gets the raw equipment index for use in {@link PlayerComposition#getEquipmentIds()}.
-	 *
-	 * @return raw equipment index
-	 */
-	public int getIndex()
+	@ConfigItem(
+		keyName = "protecteditems",
+		name = "# of protected items",
+		description = "Limit 4",
+		position = 2
+	)
+	default int protecteditems()
 	{
-		return index;
+		return 1;
+	}
+
+	@ConfigItem(
+		keyName = "ExactValue",
+		name = "Show exact value",
+		description = "shows the excact gp value",
+		position = 3
+	)
+	default boolean ExactValue()
+	{
+		return false;
 	}
 }

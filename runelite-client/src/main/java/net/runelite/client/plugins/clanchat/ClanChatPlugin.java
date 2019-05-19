@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.inject.Inject;
 import net.runelite.api.ChatLineBuffer;
 import net.runelite.api.ChatMessageType;
@@ -111,8 +112,14 @@ public class ClanChatPlugin extends Plugin
 	private ClientThread clientThread;
 
 	private List<String> chats = new ArrayList<>();
-	private List<Player> clanMembers = new ArrayList<>();
+//	private List<Player> clanMembers = new ArrayList<>();
 	private ClanChatIndicator clanMemberCounter;
+
+	public static CopyOnWriteArrayList<Player> getClanMembers()
+	{
+		return (CopyOnWriteArrayList<Player>) clanMembers.clone();
+	}
+	private static CopyOnWriteArrayList<Player> clanMembers = new CopyOnWriteArrayList<>();
 	/**
 	 * queue of temporary messages added to the client
 	 */
