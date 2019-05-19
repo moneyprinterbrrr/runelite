@@ -86,11 +86,12 @@ public class FreezeTimersOverlay extends Overlay
 	private boolean drawFreezeOverlay(Graphics2D g, Actor actor, int overlaysDrawn)
 	{
 		long currentTick = System.currentTimeMillis();
-		if (timers.getTimerEnd(actor, TimerType.FREEZE) <= currentTick)
+		TimerWorldPoint twp = timers.getTimerEnd(actor, TimerType.FREEZE);
+		if (twp.getTime() <= currentTick || !twp.getWorldPoint().equals(actor.getWorldLocation()))
 		{
 			return false;
 		}
-		long finishedAt = timers.getTimerEnd(actor, TimerType.FREEZE);
+		long finishedAt = timers.getTimerEnd(actor, TimerType.FREEZE).getTime();
 
 		String text = processTickCounter(finishedAt);
 		Point poi = actor.getCanvasTextLocation(g, text, 0);
@@ -112,11 +113,11 @@ public class FreezeTimersOverlay extends Overlay
 	private boolean drawTBOverlay(Graphics2D g, Actor actor, int overlaysDrawn)
 	{
 		long currentTick = System.currentTimeMillis();
-		if (timers.getTimerEnd(actor, TimerType.TELEBLOCK) <= currentTick)
+		if (timers.getTimerEnd(actor, TimerType.TELEBLOCK).getTime() <= currentTick)
 		{
 			return false;
 		}
-		long finishedAt = timers.getTimerEnd(actor, TimerType.TELEBLOCK);
+		long finishedAt = timers.getTimerEnd(actor, TimerType.TELEBLOCK).getTime();
 
 		String text = processTickCounter(finishedAt);
 		Point poi = actor.getCanvasTextLocation(g, text, 0);
@@ -126,11 +127,11 @@ public class FreezeTimersOverlay extends Overlay
 
 		if (config.noImage())
 		{
-			if (timers.getTimerEnd(actor, TimerType.FREEZE) <= currentTick)
+			if (timers.getTimerEnd(actor, TimerType.FREEZE).getTime() <= currentTick)
 			{
 				renderTextLocation(g, text, 11, Font.PLAIN, Color.CYAN, poi);
 			}
-			if (timers.getTimerEnd(actor, TimerType.FREEZE) >= currentTick)
+			if (timers.getTimerEnd(actor, TimerType.FREEZE).getTime() >= currentTick)
 			{
 				renderTextLocation(g, " | " + text, 11, Font.PLAIN, Color.CYAN, FixedPoint);
 			}
@@ -145,11 +146,11 @@ public class FreezeTimersOverlay extends Overlay
 	private boolean drawVengOverlay(Graphics2D g, Actor actor, int overlaysDrawn)
 	{
 		long currentTick = System.currentTimeMillis();
-		if (timers.getTimerEnd(actor, TimerType.VENG) <= currentTick)
+		if (timers.getTimerEnd(actor, TimerType.VENG).getTime() <= currentTick)
 		{
 			return false;
 		}
-		long finishedAt = timers.getTimerEnd(actor, TimerType.VENG);
+		long finishedAt = timers.getTimerEnd(actor, TimerType.VENG).getTime();
 
 		String text = processTickCounter(finishedAt);
 		Point poi = actor.getCanvasTextLocation(g, text, 0);
@@ -158,11 +159,11 @@ public class FreezeTimersOverlay extends Overlay
 		Point FixedPoint = new Point(xpoi, ypoi);
 		if (config.noImage())
 		{
-			if (timers.getTimerEnd(actor, TimerType.FREEZE) <= currentTick)
+			if (timers.getTimerEnd(actor, TimerType.FREEZE).getTime() <= currentTick)
 			{
 				renderTextLocation(g, text, 11, Font.BOLD, Color.RED, poi);
 			}
-			if (timers.getTimerEnd(actor, TimerType.FREEZE) >= currentTick)
+			if (timers.getTimerEnd(actor, TimerType.FREEZE).getTime() >= currentTick)
 			{
 				renderTextLocation(g, text + " | ", 11, Font.BOLD, Color.RED, FixedPoint);
 			}

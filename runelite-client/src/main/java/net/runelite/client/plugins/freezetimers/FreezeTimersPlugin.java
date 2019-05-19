@@ -69,7 +69,7 @@ public class FreezeTimersPlugin extends Plugin
 		{
 			length /= 2;
 		}
-		if (timers.getTimerEnd(graphicChanged.getActor(), effect.getType()) > System.currentTimeMillis())
+		if (timers.getTimerEnd(graphicChanged.getActor(), effect.getType()).getTime() > System.currentTimeMillis())
 		{
 			return;
 		}
