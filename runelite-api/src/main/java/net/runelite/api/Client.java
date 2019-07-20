@@ -1657,7 +1657,7 @@ public interface Client extends GameEngine
 
 //	NodeCache getHealthBarCache();
 
-//	void toggleRenderSelf();
+	void toggleRenderSelf();
 
 	/**
 	 *
