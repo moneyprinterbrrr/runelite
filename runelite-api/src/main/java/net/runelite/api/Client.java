@@ -360,6 +360,7 @@ public interface Client extends GameEngine
 	 * @param scale the scale of the sprite
 	 * @return the created sprite
 	 */
+	@Nullable
 	SpritePixels createItemSprite(int itemId, int quantity, int border, int shadowColor, int stackable, boolean noted, int scale);
 
 	/**
@@ -370,6 +371,7 @@ public interface Client extends GameEngine
 	 * @param fileId the sprites file ID
 	 * @return the sprite image of the file
 	 */
+	@Nullable
 	SpritePixels[] getSprites(IndexDataBase source, int archiveId, int fileId);
 
 	/**
@@ -408,23 +410,6 @@ public interface Client extends GameEngine
 	 * @return the pressed mouse button
 	 */
 	int getMouseCurrentButton();
-
-	/**
-	 * Schedules checking of current region tile for next frame, so ${@link Client#getSelectedSceneTile()} ()} will
-	 * return actual value.
-	 *
-	 * @param checkClick when true next frame selected region tile will be updated
-	 */
-	void setCheckClick(boolean checkClick);
-
-	/**
-	 * Sets current mouse hover position. This value is automatically updated only when right-clicking in game.
-	 * Setting this value together with ${@link Client#setCheckClick(boolean)} will update ${@link Client#getSelectedSceneTile()} ()}
-	 * for next frame.
-	 *
-	 * @param position current mouse hover position
-	 */
-	void setMouseCanvasHoverPosition(Point position);
 
 	/**
 	 * Gets the currently selected tile (ie. last right clicked tile).
@@ -1648,6 +1633,11 @@ public interface Client extends GameEngine
 	 * Returns client item composition cache
 	 */
 	NodeCache getItemCompositionCache();
+
+	/**
+	 * Returns the array of cross sprites that appear and animate when left-clicking
+	 */
+	SpritePixels[] getCrossSprites();
 
 	EnumComposition getEnum(int id);
 
