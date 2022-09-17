@@ -13,6 +13,8 @@ import javax.inject.Inject;
 // Info on how rs2asm works: https://github.com/runelite/runelite/wiki/Working-with-client-scripts
 // Updates can be found at RuneStar: https://github.com/Joshua-F/cs2-scripts/blob/master/scripts/%5Bproc,settings_special_attack_bar_tooltip%5D.cs2
 // Updates in flat cache: https://github.com/Abextm/osrs-cache/releases
+// Source: https://github.com/open-osrs/runelite/blob/master/runelite-client/src/main/scripts/SpecbarRedraw.rs2asm
+// Source: https://github.com/xKylee/plugins-source/blob/master/specbar/src/main/java/net/runelite/client/plugins/specbar/SpecBarPlugin.java
 
 //@Extension
 @PluginDescriptor(
