@@ -46,17 +46,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.ChatMessageType;
-import net.runelite.api.Client;
-import net.runelite.api.GameState;
-import net.runelite.api.ItemComposition;
-import net.runelite.api.KeyCode;
-import net.runelite.api.MenuAction;
-import net.runelite.api.MenuEntry;
-import net.runelite.api.NPC;
-import net.runelite.api.NPCComposition;
-import net.runelite.api.ObjectComposition;
-import net.runelite.api.ParamID;
+import net.runelite.api.*;
 import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.MenuOpened;
 import net.runelite.api.events.PostItemComposition;
@@ -81,6 +71,7 @@ import static net.runelite.client.plugins.menuentryswapper.MenuEntrySwapperConfi
 import static net.runelite.client.plugins.menuentryswapper.MenuEntrySwapperConfig.MorytaniaLegsMode;
 import static net.runelite.client.plugins.menuentryswapper.MenuEntrySwapperConfig.RadasBlessingMode;
 import net.runelite.client.util.Text;
+import org.apache.commons.lang3.ArrayUtils;
 
 @PluginDescriptor(
 	name = "Menu Entry Swapper",
@@ -116,6 +107,21 @@ public class MenuEntrySwapperPlugin extends Plugin
 		MenuAction.GAME_OBJECT_THIRD_OPTION,
 		MenuAction.GAME_OBJECT_FOURTH_OPTION
 		// GAME_OBJECT_FIFTH_OPTION gets sorted underneath Walk here after we swap, so it doesn't work
+	);
+
+	private static final List<MenuAction> PLAYER_MENU_TYPES = ImmutableList.of(
+//			MenuAction.WALK,
+			MenuAction.WIDGET_TARGET_ON_PLAYER,
+//			MenuAction.ITEM_USE_ON_PLAYER,
+			MenuAction.PLAYER_FIRST_OPTION,
+			MenuAction.PLAYER_SECOND_OPTION,
+			MenuAction.PLAYER_THIRD_OPTION,
+			MenuAction.PLAYER_FOURTH_OPTION,
+			MenuAction.PLAYER_FIFTH_OPTION,
+			MenuAction.PLAYER_SIXTH_OPTION,
+			MenuAction.PLAYER_SEVENTH_OPTION,
+			MenuAction.PLAYER_EIGTH_OPTION//,
+//			MenuAction.RUNELITE_PLAYER
 	);
 
 	private static final Set<String> ESSENCE_MINE_NPCS = ImmutableSet.of(
@@ -1308,6 +1314,19 @@ public class MenuEntrySwapperPlugin extends Plugin
 			}
 		}
 
+		if (PLAYER_MENU_TYPES.contains(menuAction) && config.hideAttackClan())
+		{
+			final Player player = menuEntry.getPlayer();
+			assert player != null;
+			final boolean isAttack = option.contains("Attack".toLowerCase());
+			final boolean isCast = option.contains("Cast".toLowerCase());
+
+			if ((isAttack || isCast) && player.isFriendsChatMember())
+			{
+				delete(optionIndexes, menuEntries, index);
+			}
+		}
+
 		if (NPC_MENU_TYPES.contains(menuAction))
 		{
 			final NPC npc = menuEntry.getNpc();
@@ -1586,6 +1605,18 @@ public class MenuEntrySwapperPlugin extends Plugin
 
 		sortedInsert(list1, index2);
 		sortedInsert(list2, index1);
+	}
+
+	// TODO: Check performance, array remove might be an array copy under the hood
+	//		 Only call remove on player menu, maybe shift entries in-place, last few empty
+	private void delete(ArrayListMultimap<String, Integer> optionIndexes, MenuEntry[] entries, int index)
+	{
+		MenuEntry entry = entries[index];
+		client.setMenuEntries(ArrayUtils.remove(entries, index));
+		// Update optionIndexes
+		String option = Text.removeTags(entry.getOption()).toLowerCase();
+		List<Integer> list = optionIndexes.get(option);
+		list.remove((Integer) index);
 	}
 
 	private static <T extends Comparable<? super T>> void sortedInsert(List<T> list, T value) // NOPMD: UnusedPrivateMethod: false positive

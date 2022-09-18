@@ -6,7 +6,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import javax.inject.Inject;
-//import org.pf4j.Extension;
 
 // Notes:
 // Depends on SpecbarRedraw.rs2asm
@@ -16,7 +15,6 @@ import javax.inject.Inject;
 // Source: https://github.com/open-osrs/runelite/blob/master/runelite-client/src/main/scripts/SpecbarRedraw.rs2asm
 // Source: https://github.com/xKylee/plugins-source/blob/master/specbar/src/main/java/net/runelite/client/plugins/specbar/SpecBarPlugin.java
 
-//@Extension
 @PluginDescriptor(
         name = "Specbar",
         description = "Shows specbar",

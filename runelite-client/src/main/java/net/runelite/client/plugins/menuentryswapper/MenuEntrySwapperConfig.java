@@ -74,6 +74,14 @@ public interface MenuEntrySwapperConfig extends Config
 	)
 	String groundItemSection = "groundItems";
 
+	@ConfigSection(
+			name = "PvP Swaps",
+			description = "All options that swap PvP menu entries",
+			position = 5,
+			closedByDefault = false
+	)
+	String pvpSection = "pvp";
+
 	enum ArdougneCloakMode
 	{
 		WEAR,
@@ -683,5 +691,16 @@ public interface MenuEntrySwapperConfig extends Config
 	default boolean groundItemShiftClickWalkHere()
 	{
 		return false;
+	}
+
+	@ConfigItem(
+			keyName = "hideAttackClan",
+			name = "Hide Attack Clan",
+			description = "Removes attack and cast menu options for clan members",
+			section = pvpSection
+	)
+	default boolean hideAttackClan()
+	{
+		return true;
 	}
 }
