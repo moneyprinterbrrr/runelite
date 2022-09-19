@@ -4,7 +4,7 @@
 
 - Specbar ✅
 - Clan Hide Attack/Cast ✅
-- Reorder Prayer
+- Reorder Prayer ✅
 
 ### Specbar
 
@@ -27,11 +27,9 @@
 
 ### Reorder Prayer
 
-- Probably will be the hardest, not sure RL natively supports this
-  - Doing a deob and recompile will be a lot of work
-  - Possible 3pc flag
-- Use open as a reference
-- Grab existing prayer book positions
-- Logic to swap positions, probably need `oldPrayBook` and `newPrayBook` data structures
+- Almost fully working out of the box from previous implementations
+- Reorder fails when selecting Quick prayers, reverts prayers to default layout
+- However, quick prayer activation correctly selects reordered prayers
+- Full implementation depends on `componentTable.getNodes()` requiring `RSNodeHashTable` and `RSNodeHashTableMixin`. Perhaps there is another way to check if we are in Quick prayer book tab
 
 
