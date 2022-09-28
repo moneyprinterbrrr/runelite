@@ -5,6 +5,7 @@
 - Specbar ✅
 - Clan Hide Attack/Cast ✅
 - Reorder Prayer ✅
+- Plugin Hub ✅
 
 ### Specbar
 
@@ -32,4 +33,8 @@
 - However, quick prayer activation correctly selects reordered prayers
 - Full implementation depends on `componentTable.getNodes()` requiring `RSNodeHashTable` and `RSNodeHashTableMixin`. Perhaps there is another way to check if we are in Quick prayer book tab
 
+### Plugin Hub
 
+- Hard code manifest URL to get access to plugin hub, one minor version lower than current since current is not uploaded to `https://repo.runelite.net/plugins/`
+- Don't really need Plugin hub, but access to already installed plugins
+- Maybe can skip manifest check and load installed external plugins, ignoring plugin version updates
