@@ -525,7 +525,7 @@ public final class WidgetID
 		static final int BURST_OF_STRENGTH = 10;
 		static final int CLARITY_OF_THOUGHT = 11;
 		static final int SHARP_EYE = 27;
-		static final int MYSTIC_WILL = 8;
+		static final int MYSTIC_WILL = 28;
 		static final int ROCK_SKIN = 12;
 		static final int SUPERHUMAN_STRENGTH = 13;
 		static final int IMPROVED_REFLEXES = 14;

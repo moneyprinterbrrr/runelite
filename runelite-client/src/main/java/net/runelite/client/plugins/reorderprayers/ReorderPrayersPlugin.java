@@ -7,15 +7,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
-import net.runelite.api.Client;
-import net.runelite.api.GameState;
-import net.runelite.api.HashTable;
-import net.runelite.api.Prayer;
-import net.runelite.api.WidgetNode;
-import net.runelite.api.events.DraggingWidgetChanged;
-import net.runelite.api.events.GameStateChanged;
-import net.runelite.api.events.WidgetLoaded;
-import net.runelite.api.events.WidgetMenuOptionClicked;
+
+import net.runelite.api.*;
+import net.runelite.api.events.*;
 import net.runelite.api.widgets.Widget;
 import static net.runelite.api.widgets.WidgetConfig.DRAG;
 import static net.runelite.api.widgets.WidgetConfig.DRAG_ON;
@@ -207,6 +201,15 @@ public class ReorderPrayersPlugin extends Plugin
         clearPrayerTabMenus();
         prayerOrder = Prayer.values();
         reorderPrayers(false);
+    }
+
+    @Subscribe
+    public void onScriptPostFired(ScriptPostFired event)
+    {
+        if (event.getScriptId() == ScriptID.NEW_PRAYER_WIDGET)
+        {
+            reorderPrayers();
+        }
     }
 
     @Subscribe
