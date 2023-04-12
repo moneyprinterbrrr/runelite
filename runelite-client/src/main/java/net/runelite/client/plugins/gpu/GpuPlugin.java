@@ -147,6 +147,7 @@ public class GpuPlugin extends Plugin implements DrawCallbacks
 
 	static final Shader PROGRAM = new Shader()
 		.add(GL43C.GL_VERTEX_SHADER, "vert.glsl")
+		.add(GL43C.GL_GEOMETRY_SHADER, "geom.glsl")
 		.add(GL43C.GL_FRAGMENT_SHADER, "frag.glsl");
 
 	static final Shader COMPUTE_PROGRAM = new Shader()
@@ -583,6 +584,9 @@ public class GpuPlugin extends Plugin implements DrawCallbacks
 		uniColorBlindMode = GL43C.glGetUniformLocation(glProgram, "colorBlindMode");
 		uniTextureLightMode = GL43C.glGetUniformLocation(glProgram, "textureLightMode");
 		uniTick = GL43C.glGetUniformLocation(glProgram, "tick");
+		uniBlockMain = GL43C.glGetUniformBlockIndex(glProgram, "uniforms");
+		uniTextures = GL43C.glGetUniformLocation(glProgram, "textures");
+		uniTextureAnimations = GL43C.glGetUniformLocation(glProgram, "textureAnimations");
 
 		uniTex = GL43C.glGetUniformLocation(glUiProgram, "tex");
 		uniTexSamplingMode = GL43C.glGetUniformLocation(glUiProgram, "samplingMode");
@@ -590,14 +594,11 @@ public class GpuPlugin extends Plugin implements DrawCallbacks
 		uniTexSourceDimensions = GL43C.glGetUniformLocation(glUiProgram, "sourceDimensions");
 		uniUiColorBlindMode = GL43C.glGetUniformLocation(glUiProgram, "colorBlindMode");
 		uniUiAlphaOverlay = GL43C.glGetUniformLocation(glUiProgram, "alphaOverlay");
-		uniTextures = GL43C.glGetUniformLocation(glProgram, "textures");
-		uniTextureAnimations = GL43C.glGetUniformLocation(glProgram, "textureAnimations");
 
 		if (computeMode == ComputeMode.OPENGL)
 		{
 			uniBlockSmall = GL43C.glGetUniformBlockIndex(glSmallComputeProgram, "uniforms");
 			uniBlockLarge = GL43C.glGetUniformBlockIndex(glComputeProgram, "uniforms");
-			uniBlockMain = GL43C.glGetUniformBlockIndex(glProgram, "uniforms");
 		}
 	}
 
@@ -797,6 +798,12 @@ public class GpuPlugin extends Plugin implements DrawCallbacks
 		GL43C.glBindRenderbuffer(GL43C.GL_RENDERBUFFER, rboSceneHandle);
 		GL43C.glRenderbufferStorageMultisample(GL43C.GL_RENDERBUFFER, aaSamples, GL43C.GL_RGBA, width, height);
 		GL43C.glFramebufferRenderbuffer(GL43C.GL_FRAMEBUFFER, GL43C.GL_COLOR_ATTACHMENT0, GL43C.GL_RENDERBUFFER, rboSceneHandle);
+
+		int status = GL43C.glCheckFramebufferStatus(GL43C.GL_FRAMEBUFFER);
+		if (status != GL43C.GL_FRAMEBUFFER_COMPLETE)
+		{
+			throw new RuntimeException("FBO is incomplete. status: " + status);
+		}
 
 		// Reset
 		GL43C.glBindFramebuffer(GL43C.GL_FRAMEBUFFER, awtContext.getFramebuffer(false));
@@ -1029,8 +1036,8 @@ public class GpuPlugin extends Plugin implements DrawCallbacks
 		if (computeMode == ComputeMode.NONE)
 		{
 			targetBufferOffset += sceneUploader.upload(model,
-				// tile model is already positioned in the scene, so it not necessary to offset it
-				0, 0,
+				tileX, tileY,
+				tileX << Perspective.LOCAL_COORD_BITS, tileY << Perspective.LOCAL_COORD_BITS,
 				vertexBuffer, uvBuffer,
 				true);
 		}
