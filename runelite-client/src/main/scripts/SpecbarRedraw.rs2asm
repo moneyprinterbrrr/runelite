@@ -146,7 +146,7 @@ LABEL115:
    istore                 3
 LABEL117:
    iload                  3
-   iload                  1
+   iconst                 1
    if_icmpeq              LABEL121
    jump                   LABEL125
 LABEL121:
