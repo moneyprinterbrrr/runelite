@@ -63,25 +63,45 @@ public class ExternalPluginClient
 	private final OkHttpClient okHttpClient;
 	private final Gson gson;
 	private final HttpUrl apiBase;
+	private final HttpUrl pluginHubBase;
 
 	@Inject
 	private ExternalPluginClient(OkHttpClient okHttpClient,
 		Gson gson,
-		@Named("runelite.api.base") HttpUrl apiBase
+		@Named("runelite.api.base") HttpUrl apiBase,
+		@Named("runelite.pluginhub.url") HttpUrl pluginHubBase
 	)
 	{
 		this.okHttpClient = okHttpClient;
 		this.gson = gson;
 		this.apiBase = apiBase;
+		this.pluginHubBase = pluginHubBase;
 	}
 
-	public List<ExternalPluginManifest> downloadManifest() throws IOException, VerificationException
+	public PluginHubManifest.ManifestLite downloadManifestLite() throws IOException, VerificationException
 	{
+		return downloadManifest("lite", PluginHubManifest.ManifestLite.class);
+	}
+
+	public PluginHubManifest.ManifestFull downloadManifestFull() throws IOException, VerificationException
+	{
+		return downloadManifest("full", PluginHubManifest.ManifestFull.class);
+	}
+
+	private <T> T downloadManifest(String name, Class<T> clazz) throws IOException, VerificationException
+	{
+		HttpUrl manifest = pluginHubBase
+			.newBuilder()
+			.addPathSegment("manifest")
+			.addPathSegment(RuneLiteProperties.getPluginHubVersion() + "_" + name + ".js")
+			.build();
+		System.out.println(manifest.toString());
+
 //		HttpUrl manifest = RuneLiteProperties.getPluginHubBase()
 //			.newBuilder()
 //			.addPathSegments("manifest.js")
 //			.build();
-		HttpUrl manifest = HttpUrl.parse("https://repo.runelite.net/plugins/1.8.33/manifest.js");
+//		HttpUrl manifest = HttpUrl.parse("https://repo.runelite.net/plugins/1.10.3/manifest.js");
 		try (Response res = okHttpClient.newCall(new Request.Builder().url(manifest).build()).execute())
 		{
 			if (res.code() != 200)
@@ -104,10 +124,7 @@ public class ExternalPluginClient
 				throw new VerificationException("Unable to verify external plugin manifest");
 			}
 
-			return gson.fromJson(new String(data, StandardCharsets.UTF_8),
-				new TypeToken<List<ExternalPluginManifest>>()
-				{
-				}.getType());
+			return gson.fromJson(new String(data, StandardCharsets.UTF_8), clazz);
 		}
 		catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e)
 		{
@@ -115,17 +132,17 @@ public class ExternalPluginClient
 		}
 	}
 
-	public BufferedImage downloadIcon(ExternalPluginManifest plugin) throws IOException
+	public BufferedImage downloadIcon(PluginHubManifest.DisplayData plugin) throws IOException
 	{
-		if (!plugin.hasIcon())
+		if (plugin.getIconHash() == null)
 		{
 			return null;
 		}
 
-		HttpUrl url = RuneLiteProperties.getPluginHubBase()
+		HttpUrl url = pluginHubBase
 			.newBuilder()
-			.addPathSegment(plugin.getInternalName())
-			.addPathSegment(plugin.getCommit() + ".png")
+			.addPathSegment("icon")
+			.addPathSegment(plugin.getInternalName() + "_" + plugin.getIconHash() + ".png")
 			.build();
 
 		try (Response res = okHttpClient.newCall(new Request.Builder().url(url).build()).execute())
@@ -137,6 +154,15 @@ public class ExternalPluginClient
 				return ImageIO.read(new ByteArrayInputStream(bytes));
 			}
 		}
+	}
+
+	HttpUrl getJarURL(PluginHubManifest.JarData plugin)
+	{
+		return pluginHubBase
+			.newBuilder()
+			.addPathSegment("jar")
+			.addPathSegment(plugin.getInternalName() + "_" + plugin.getJarHash() + ".jar")
+			.build();
 	}
 
 	private static Certificate loadCertificate()
