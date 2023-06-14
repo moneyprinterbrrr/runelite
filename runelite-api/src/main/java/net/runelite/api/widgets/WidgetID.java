@@ -64,8 +64,8 @@ public final class WidgetID
 	public static final int FIXED_VIEWPORT_GROUP_ID = 548;
 	public static final int RESIZABLE_VIEWPORT_OLD_SCHOOL_BOX_GROUP_ID = 161;
 	public static final int RESIZABLE_VIEWPORT_BOTTOM_LINE_GROUP_ID = 164;
-	public static final int PRAYER_GROUP_ID = 541;
-	public static final int QUICK_PRAYERS_GROUP_ID = 77;
+//	public static final int PRAYER_GROUP_ID = 541;
+//	public static final int QUICK_PRAYERS_GROUP_ID = 77;
 	public static final int SHOP_GROUP_ID = 300;
 	public static final int SHOP_INVENTORY_GROUP_ID = 301;
 	public static final int SMITHING_GROUP_ID = 312;
