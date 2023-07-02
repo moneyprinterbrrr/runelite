@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Seth <Sethtroll3@gmail.com>
+ * Copyright (c) 2023 Abex
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,51 +22,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.woodcutting;
+package net.runelite.client.util;
 
-import java.time.Duration;
-import java.time.Instant;
-import lombok.AccessLevel;
-import lombok.Getter;
+import com.apple.eawt.FullScreenAdapter;
+import com.apple.eawt.FullScreenUtilities;
+import com.apple.eawt.event.FullScreenEvent;
+import java.awt.Frame;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-class WoodcuttingSession
+@Slf4j
+@RequiredArgsConstructor
+class OSXFullScreenAdapter extends FullScreenAdapter
 {
-	private final Instant start = Instant.now();
-	@Getter(AccessLevel.PACKAGE)
-	private Instant lastChopping;
-	@Getter(AccessLevel.PACKAGE)
-	private int logsCut;
-	@Getter(AccessLevel.PACKAGE)
-	private int logsPerHr;
-	@Getter(AccessLevel.PACKAGE)
-	private int bark;
-	@Getter(AccessLevel.PACKAGE)
-	private int barkPerHr;
+	private final Frame frame;
 
-	void setLastChopping()
+	@Override
+	public void windowEnteredFullScreen(FullScreenEvent e)
 	{
-		lastChopping = Instant.now();
+		log.debug("Window entered fullscreen mode--setting extended state to {}", Frame.MAXIMIZED_BOTH);
+		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 	}
 
-	void incrementLogsCut()
+	@Override
+	public void windowExitedFullScreen(FullScreenEvent e)
 	{
-		++logsCut;
-
-		Duration elapsed = Duration.between(start, Instant.now());
-		if (!elapsed.isZero())
-		{
-			logsPerHr = (int) ((double) logsCut * Duration.ofHours(1).toMillis() / elapsed.toMillis());
-		}
+		log.debug("Window exited fullscreen mode--setting extended state to {}", Frame.NORMAL);
+		frame.setExtendedState(Frame.NORMAL);
 	}
 
-	void incrementBark(int num)
+	public static void install(Frame frame)
 	{
-		bark += num;
-
-		Duration elapsed = Duration.between(start, Instant.now());
-		if (!elapsed.isZero())
-		{
-			barkPerHr = (int) ((double) bark * Duration.ofHours(1).toMillis() / elapsed.toMillis());
-		}
+		FullScreenUtilities.addFullScreenListenerTo(frame, new OSXFullScreenAdapter(frame));
 	}
 }
