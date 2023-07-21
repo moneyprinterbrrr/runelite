@@ -1,5 +1,11 @@
 # Notes
 
+## CLI
+
+```bash
+java -ea -Drunelite.pluginhub.version=1.10.5 -jar client-1.10.6-SNAPSHOT-shaded.jar --developer-mode
+```
+
 ## PvP Helpers
 
 - Specbar ✅
