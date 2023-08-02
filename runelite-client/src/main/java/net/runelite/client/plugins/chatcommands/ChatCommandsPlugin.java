@@ -1966,6 +1966,10 @@ public class ChatCommandsPlugin extends Plugin
 			case "vetion":
 				return "Vet'ion";
 
+			case "calvarion":
+			case "calv":
+				return "Calvar'ion";
+
 			case "vene":
 				return "Venenatis";
 
@@ -2460,6 +2464,14 @@ public class ChatCommandsPlugin extends Plugin
 			case "muspah":
 			case "pm":
 				return "Phantom Muspah";
+
+			// Desert Treasure 2 bosses
+			case "the leviathan":
+				return "Leviathan";
+			case "duke":
+				return "Duke Sucellus";
+			case "the whisperer":
+				return "Whisperer";
 
 			default:
 				return WordUtils.capitalize(boss);
