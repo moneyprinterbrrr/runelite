@@ -102,9 +102,6 @@ public class PrayerPlugin extends Plugin
 	private ItemManager itemManager;
 
 	@Inject
-	private PrayerReorder prayerReorder;
-
-	@Inject
 	private EventBus eventBus;
 
 	@Provides
@@ -119,9 +116,6 @@ public class PrayerPlugin extends Plugin
 		overlayManager.add(flickOverlay);
 		overlayManager.add(doseOverlay);
 		overlayManager.add(barOverlay);
-
-		prayerReorder.startUp();
-		eventBus.register(prayerReorder);
 	}
 
 	@Override
@@ -131,15 +125,6 @@ public class PrayerPlugin extends Plugin
 		overlayManager.remove(doseOverlay);
 		overlayManager.remove(barOverlay);
 		removeIndicators();
-
-		prayerReorder.shutDown();
-		eventBus.unregister(prayerReorder);
-	}
-
-	@Override
-	public void resetConfiguration()
-	{
-		prayerReorder.reset();
 	}
 
 	@Subscribe

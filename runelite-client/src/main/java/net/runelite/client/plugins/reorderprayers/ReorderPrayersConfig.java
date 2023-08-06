@@ -45,6 +45,5 @@ public interface ReorderPrayersConfig extends Config
             description = ""
     )
     void prayerOrder(String prayerOrder);
-
 }
 

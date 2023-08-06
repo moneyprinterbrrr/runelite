@@ -19,7 +19,6 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.menus.MenuManager;
-import net.runelite.client.menus.WidgetMenuOption;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 
@@ -117,30 +116,6 @@ public class ReorderPrayersPlugin extends Plugin
             WidgetID.QuickPrayer.AUGURY_CHILD_ID
     );
 
-    private static final String LOCK = "Lock";
-
-    private static final String UNLOCK = "Unlock";
-
-    private static final String MENU_TARGET = "Reordering";
-
-    private static final WidgetMenuOption FIXED_PRAYER_TAB_LOCK = new WidgetMenuOption(LOCK,
-            MENU_TARGET, WidgetInfo.FIXED_VIEWPORT_PRAYER_TAB);
-
-    private static final WidgetMenuOption FIXED_PRAYER_TAB_UNLOCK = new WidgetMenuOption(UNLOCK,
-            MENU_TARGET, WidgetInfo.FIXED_VIEWPORT_PRAYER_TAB);
-
-    private static final WidgetMenuOption RESIZABLE_PRAYER_TAB_LOCK = new WidgetMenuOption(LOCK,
-            MENU_TARGET, WidgetInfo.RESIZABLE_VIEWPORT_PRAYER_TAB);
-
-    private static final WidgetMenuOption RESIZABLE_PRAYER_TAB_UNLOCK = new WidgetMenuOption(UNLOCK,
-            MENU_TARGET, WidgetInfo.RESIZABLE_VIEWPORT_PRAYER_TAB);
-
-    private static final WidgetMenuOption RESIZABLE_BOTTOM_LINE_PRAYER_TAB_LOCK = new WidgetMenuOption(LOCK,
-            MENU_TARGET, WidgetInfo.RESIZABLE_VIEWPORT_BOTTOM_LINE_PRAYER_TAB);
-
-    private static final WidgetMenuOption RESIZABLE_BOTTOM_LINE_PRAYER_TAB_UNLOCK = new WidgetMenuOption(UNLOCK,
-            MENU_TARGET, WidgetInfo.RESIZABLE_VIEWPORT_BOTTOM_LINE_PRAYER_TAB);
-
     @Inject
     private Client client;
 
@@ -190,7 +165,6 @@ public class ReorderPrayersPlugin extends Plugin
     @Override
     protected void startUp()
     {
-        refreshPrayerTabOption();
         prayerOrder = stringToPrayerOrder(config.prayerOrder());
         reorderPrayers();
     }
@@ -198,7 +172,6 @@ public class ReorderPrayersPlugin extends Plugin
     @Override
     protected void shutDown()
     {
-        clearPrayerTabMenus();
         prayerOrder = Prayer.values();
         reorderPrayers(false);
     }
@@ -206,7 +179,10 @@ public class ReorderPrayersPlugin extends Plugin
     @Subscribe
     public void onScriptPostFired(ScriptPostFired event)
     {
-        if (event.getScriptId() == ScriptID.NEW_PRAYER_WIDGET)
+        if (//event.getScriptId() == ScriptID.NEW_PRAYER_WIDGET ||
+            event.getScriptId() == ScriptID.PRAYER_UPDATEBUTTON ||
+            event.getScriptId() == ScriptID.PRAYER_REDRAW ||
+            event.getScriptId() == ScriptID.QUICKPRAYER_INIT)
         {
             reorderPrayers();
         }
@@ -229,10 +205,6 @@ public class ReorderPrayersPlugin extends Plugin
             if (event.getKey().equals(CONFIG_PRAYER_ORDER_KEY))
             {
                 prayerOrder = stringToPrayerOrder(config.prayerOrder());
-            }
-            else if (event.getKey().equals(CONFIG_UNLOCK_REORDERING_KEY))
-            {
-                refreshPrayerTabOption();
             }
             reorderPrayers();
         }
@@ -279,67 +251,21 @@ public class ReorderPrayersPlugin extends Plugin
         }
     }
 
-    @Subscribe
-    private void onWidgetMenuOptionClicked(WidgetMenuOptionClicked event)
-    {
-        if (event.getWidget() == WidgetInfo.FIXED_VIEWPORT_PRAYER_TAB
-                || event.getWidget() == WidgetInfo.RESIZABLE_VIEWPORT_PRAYER_TAB
-                || event.getWidget() == WidgetInfo.RESIZABLE_VIEWPORT_BOTTOM_LINE_PRAYER_TAB)
-        {
-            config.unlockPrayerReordering(event.getMenuOption().equals(UNLOCK));
-        }
-    }
-
-    private void clearPrayerTabMenus()
-    {
-        menuManager.removeManagedCustomMenu(FIXED_PRAYER_TAB_LOCK);
-        menuManager.removeManagedCustomMenu(RESIZABLE_PRAYER_TAB_LOCK);
-        menuManager.removeManagedCustomMenu(RESIZABLE_BOTTOM_LINE_PRAYER_TAB_LOCK);
-        menuManager.removeManagedCustomMenu(FIXED_PRAYER_TAB_UNLOCK);
-        menuManager.removeManagedCustomMenu(RESIZABLE_PRAYER_TAB_UNLOCK);
-        menuManager.removeManagedCustomMenu(RESIZABLE_BOTTOM_LINE_PRAYER_TAB_UNLOCK);
-    }
-
-    private void refreshPrayerTabOption()
-    {
-        clearPrayerTabMenus();
-        if (config.unlockPrayerReordering())
-        {
-            menuManager.addManagedCustomMenu(FIXED_PRAYER_TAB_LOCK, null);
-            menuManager.addManagedCustomMenu(RESIZABLE_PRAYER_TAB_LOCK, null);
-            menuManager.addManagedCustomMenu(RESIZABLE_BOTTOM_LINE_PRAYER_TAB_LOCK, null);
-        }
-        else
-        {
-            menuManager.addManagedCustomMenu(FIXED_PRAYER_TAB_UNLOCK, null);
-            menuManager.addManagedCustomMenu(RESIZABLE_PRAYER_TAB_UNLOCK, null);
-            menuManager.addManagedCustomMenu(RESIZABLE_BOTTOM_LINE_PRAYER_TAB_UNLOCK, null);
-        }
-    }
-
     private PrayerTabState getPrayerTabState()
     {
-//        HashTable<WidgetNode> componentTable = client.getComponentTable();
-//        for (WidgetNode widgetNode : componentTable.getNodes())
-//        {
-//            if (widgetNode.getId() == WidgetID.PRAYER_GROUP_ID)
-//            {
-//                return PrayerTabState.PRAYERS;
-//            }
-//            else if (widgetNode.getId() == WidgetID.QUICK_PRAYERS_GROUP_ID)
-//            {
-//                return PrayerTabState.QUICK_PRAYERS;
-//            }
-//        }
-//        return PrayerTabState.NONE;
-
-        // Default: allows for reordering from prayer book
-        // Quick prayer selection tab will revert layout
-        // However, quick prayer activation correctly selects reordered prayers
-        // TODO: above full implementation depends on `componentTable.getNodes()`
-        //       requiring `RSNodeHashTable` and `RSNodeHashTableMixin`
-        //       Maybe theres another way to check if we are in Quick prayer book tab
-        return PrayerTabState.PRAYERS;
+        HashTable<WidgetNode> componentTable = client.getComponentTable();
+        for (WidgetNode widgetNode : componentTable)
+        {
+            if (widgetNode.getId() == WidgetID.PRAYER_GROUP_ID)
+            {
+                return PrayerTabState.PRAYERS;
+            }
+            else if (widgetNode.getId() == WidgetID.QUICK_PRAYERS_GROUP_ID)
+            {
+                return PrayerTabState.QUICK_PRAYERS;
+            }
+        }
+        return PrayerTabState.NONE;
     }
 
     private void save()
@@ -364,7 +290,7 @@ public class ReorderPrayersPlugin extends Plugin
         if (prayerTabState == PrayerTabState.PRAYERS)
         {
             List<Widget> prayerWidgets = PRAYER_WIDGET_INFO_LIST.stream()
-                    .map(client::getWidget)
+                    .map(w -> client.getWidget(w.getId()))
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
