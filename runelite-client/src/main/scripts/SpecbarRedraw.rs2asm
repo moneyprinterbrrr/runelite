@@ -97,7 +97,7 @@ LABEL73:
    istore                 5
 LABEL75:
    iload                  2
-   iconst                 25484
+   iconst                 28338
    if_icmpeq              LABEL79
    jump                   LABEL97
 LABEL79:
@@ -194,8 +194,8 @@ LABEL128:
       22734: LABEL153
       22737: LABEL153
       22740: LABEL153
-      22743: LABEL153
-   jump                   LABEL161
+      28338: LABEL162
+   jump                   LABEL170
 LABEL153:
    iconst                 111
    iconst                 115
@@ -205,51 +205,61 @@ LABEL153:
    sconst                 " 5-100% "
    join_string            2
    sstore                 0
-LABEL161:
+   jump                   LABEL170
+LABEL162:
+   iconst                 111
+   iconst                 115
+   iconst                 1739
+   iload                  7
+   enum
+   sconst                 " 0-5"
+   join_string            2
+   sstore                 0
+LABEL170:
    get_varbit             5712
    iconst                 0
-   if_icmpeq              LABEL165
-   jump                   LABEL261
-LABEL165:
+   if_icmpeq              LABEL174
+   jump                   LABEL270
+LABEL174:
    iload                  7
    iconst                 11235
-   if_icmpeq              LABEL181
+   if_icmpeq              LABEL190
    iload                  7
    iconst                 20408
-   if_icmpeq              LABEL181
+   if_icmpeq              LABEL190
    iload                  7
    iconst                 12765
-   if_icmpeq              LABEL181
+   if_icmpeq              LABEL190
    iload                  7
    iconst                 12768
-   if_icmpeq              LABEL181
+   if_icmpeq              LABEL190
    iload                  7
    iconst                 12767
-   if_icmpeq              LABEL181
-   jump                   LABEL211
-LABEL181:
+   if_icmpeq              LABEL190
+   jump                   LABEL220
+LABEL190:
    iconst                 94
    iconst                 13
    inv_getobj
    iconst                 11212
-   if_icmpeq              LABEL202
+   if_icmpeq              LABEL211
    iconst                 94
    iconst                 13
    inv_getobj
    iconst                 11227
-   if_icmpeq              LABEL202
+   if_icmpeq              LABEL211
    iconst                 94
    iconst                 13
    inv_getobj
    iconst                 11228
-   if_icmpeq              LABEL202
+   if_icmpeq              LABEL211
    iconst                 94
    iconst                 13
    inv_getobj
    iconst                 11229
-   if_icmpeq              LABEL202
-   jump                   LABEL211
-LABEL202:
+   if_icmpeq              LABEL211
+   jump                   LABEL220
+LABEL211:
    sconst                 "Descent of Dragons: Deal a double attack with dragon arrows that inflicts up to 50% more damage (minimum damage of 8 per hit). ("
    iload                  7
    invoke                 3648
@@ -259,34 +269,34 @@ LABEL202:
    sconst                 "%)"
    join_string            3
    sstore                 0
-LABEL211:
+LABEL220:
    iload                  7
    iconst                 27853
-   if_icmpeq              LABEL215
-   jump                   LABEL245
-LABEL215:
+   if_icmpeq              LABEL224
+   jump                   LABEL254
+LABEL224:
    iconst                 94
    iconst                 13
    inv_getobj
    iconst                 11212
-   if_icmpeq              LABEL236
+   if_icmpeq              LABEL245
    iconst                 94
    iconst                 13
    inv_getobj
    iconst                 11227
-   if_icmpeq              LABEL236
+   if_icmpeq              LABEL245
    iconst                 94
    iconst                 13
    inv_getobj
    iconst                 11228
-   if_icmpeq              LABEL236
+   if_icmpeq              LABEL245
    iconst                 94
    iconst                 13
    inv_getobj
    iconst                 11229
-   if_icmpeq              LABEL236
-   jump                   LABEL245
-LABEL236:
+   if_icmpeq              LABEL245
+   jump                   LABEL254
+LABEL245:
    sconst                 "Descent of Dragons: Deal a double attack with dragon arrows that inflicts up to 50% more damage (minimum damage of 10 per hit). ("
    iload                  7
    invoke                 3648
@@ -296,7 +306,7 @@ LABEL236:
    sconst                 "%)"
    join_string            3
    sstore                 0
-LABEL245:
+LABEL254:
    iconst                 526
    iconst                 -2147483645
    iconst                 -1
@@ -312,11 +322,11 @@ LABEL245:
    sconst                 "I"
    iconst                 38862883
    if_setonmouseleave
-   jump                   LABEL265
-LABEL261:
+   jump                   LABEL274
+LABEL270:
    iconst                 -1
    sconst                 ""
    iconst                 38862883
    if_setonmouserepeat
-LABEL265:
+LABEL274:
    return
