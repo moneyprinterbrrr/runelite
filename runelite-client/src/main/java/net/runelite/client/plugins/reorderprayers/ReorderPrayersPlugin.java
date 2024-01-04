@@ -50,7 +50,7 @@ public class ReorderPrayersPlugin extends Plugin
 
     private static final int PRAYER_COLUMN_COUNT = 5;
 
-    private static final int PRAYER_COUNT = Prayer.values().length;
+    private static final int PRAYER_COUNT = Prayer.values().length; // TODO: RP_PRAYERS cause issues
 
     private static final List<WidgetInfo> PRAYER_WIDGET_INFO_LIST = ImmutableList.of(
             WidgetInfo.PRAYER_THICK_SKIN,
@@ -116,6 +116,8 @@ public class ReorderPrayersPlugin extends Plugin
             WidgetID.QuickPrayer.AUGURY_CHILD_ID
     );
 
+    public static final int NEW_PRAYER_WIDGET_SCRIPT_ID = 359;
+
     @Inject
     private Client client;
 
@@ -179,10 +181,7 @@ public class ReorderPrayersPlugin extends Plugin
     @Subscribe
     public void onScriptPostFired(ScriptPostFired event)
     {
-        if (//event.getScriptId() == ScriptID.NEW_PRAYER_WIDGET ||
-            event.getScriptId() == ScriptID.PRAYER_UPDATEBUTTON ||
-            event.getScriptId() == ScriptID.PRAYER_REDRAW ||
-            event.getScriptId() == ScriptID.QUICKPRAYER_INIT)
+        if (event.getScriptId() == NEW_PRAYER_WIDGET_SCRIPT_ID)
         {
             reorderPrayers();
         }
@@ -363,5 +362,4 @@ public class ReorderPrayersPlugin extends Plugin
             }
         }
     }
-
 }

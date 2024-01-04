@@ -5,6 +5,8 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
+import java.util.Arrays;
+
 @ConfigGroup(ReorderPrayersPlugin.CONFIG_GROUP_KEY)
 public interface ReorderPrayersConfig extends Config
 {
@@ -36,7 +38,9 @@ public interface ReorderPrayersConfig extends Config
     )
     default String prayerOrder()
     {
-        return ReorderPrayersPlugin.prayerOrderToString(Prayer.values());
+        return ReorderPrayersPlugin.prayerOrderToString(
+                Arrays.copyOfRange(Prayer.values(), 0, 29)
+        );
     }
 
     @ConfigItem(
